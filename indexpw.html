@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible"  />
+
+    <title>Audrey's Password Generator</title>
+
+    <style>
+
+        :root {
+
+    --teal: hsla(81, 100%, 53%, 0.39);
+
+    --tomato: hwb(0 13% 0% / 0.719);
+
+    --lightgray: #a8a8a8e0;
+
+    --gradient: linear-gradient(to left, var(--teal), var(--tomato));
+
+}
+
+ 
+
+body {
+
+    background-image: var(--gradient);
+
+    font-family: "Lexend", sans-serif;
+
+    accent-color: var(--lightgray);
+
+    -webkit-font-smoothing: antialiased;
+
+}
+
+ 
+
+header {
+
+    text-align: center;
+
+    font-size:xx-large;
+
+    font-weight: 700;
+
+    font-stretch: extra-expanded;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    padding: 0px;
+
+    padding-top: 5px;
+
+    color: hwb(210 99% 0%);
+
+}
+
+paragraph {
+
+    font-size: large;
+
+    text-align: center;
+
+}
+
+.card {
+
+    align-items: center;
+
+    text-align: center;
+
+    margin: auto;
+
+    max-height:fit-content;
+
+    max-width: fit-content;
+
+}
+
+    .container {
+
+        max-width: 650px;
+
+        margin: 5rem auto;
+
+        padding: 1rem;
+
+        padding-top: 0.125rem;
+
+        padding-bottom: 1rem;
+
+        border-radius: 5px;
+
+        background: white;
+
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgba(252, 249, 249, 0.1);
+
+    }
+
+    result-container {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        position: relative;
+
+    }
+
+ 
+
+    #result {
+
+        flex: 1;
+
+        font-family: Monaco, mono;
+
+        background: #f4f4f4;
+
+    }
+
+ 
+
+    .copy-result {
+
+        background-image: var(--gradient);
+
+        border: none;
+
+        padding: 14px 18px;
+
+        color: white;
+
+        border-radius: 25px;
+
+        margin-left: 16px;
+
+        position: absolute;
+
+        right: 12px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        z-index: 50;
+
+        font-size: 0.8rem;
+
+    }
+
+ 
+
+    .copy-result:hover {
+
+        background: var(--teal);
+
+    }
+
+ 
+
+    input[type="text"] {
+
+        padding: 20px 24px;
+
+        border: 1px solid var(--lightgray);
+
+        border-radius: 50px;
+
+    }
+
+ 
+
+    input[type="range"] {
+
+        padding: 8px 10px;
+
+        background: #f8f8f8;
+
+        flex: 1;
+
+        margin-left: 1rem;
+
+        margin-right: 1rem;
+
+    }
+
+ 
+
+    input[type="text"]:focus,
+
+    input[type="number"]:focus {
+
+        border: 1px solid var(--teal);
+
+        outline: none;
+
+    }
+
+ 
+
+    input[type="checkbox"] {
+
+        width: 16px;
+
+        height: 16px;
+
+    }
+
+ 
+
+    .settings {
+
+        margin-top: 3rem;
+
+    }
+
+ 
+
+    .input-group {
+
+        margin-bottom: 2rem;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+    }
+
+ 
+
+    .generate-btn {
+
+        background-image: var(--gradient);
+
+        padding: 14px 24px;
+
+        border: none;
+
+        font-weight: 600;
+
+        color: white;
+
+        display: block;
+
+        width: 100%;
+
+        border-radius: 25px;
+
+        cursor: pointer;
+
+        font-size: 1.25rem;
+
+    }
+
+ 
+
+    .generate-btn:hover,
+
+    .copy-btn:hover {
+
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+ 
+
+        background: var(--teal);
+
+    }
+
+ 
+
+    .alert {
+
+        position: fixed;
+
+        top: 6px;
+
+        right: 6px;
+
+        padding: 10px;
+
+        border-radius: 4px;
+
+        background: rgba(0, 0, 0, 0.4);
+
+        color: white;
+
+        font-size: 20px;
+
+    }
+
+ 
+
+ 
+
+</style>
+
+
+
+</head>
+
+<!--this is the end of the head section-->
+
+
+
+<body>
+
+    <header>
+
+        <h1>Password Generator</h1>
+
+    </header>
+
+   
+
+        <p style="text-align:center;">
+
+            <textarea readonly id="ta_final_PW" placeholder="Your Secure Password" aria-label="Generated Password"></textarea>
+
+        </p>
+
+
+
+    <!--this is the end of the open result window that says your secure password-->
+
+    <div class="container">
+
+        <div class="settings">
+
+            <div class="input-group">
+
+                <label>Password length (8-128)</label>
+
+                <input type="range" class="slider" id="sl_length" min="8" max="128" step="1" />
+
+                <span id="spn_lengthResult">10</span>
+
+            </div>
+
+            <!--I put the range slider script under here b/c it won't work in an external file-->
+
+            <script>
+
+                var slider = document.getElementById("sl_length").value;
+
+                var output = document.getElementById("spn_lengthResult");
+
+                output.innerHTML = sl_length.value;
+
+
+
+                sl_length.oninput = function () {
+
+                    output.innerHTML = this.value;
+
+                }
+
+            </script>
+
+            <div class="input-group">
+
+                <label>Include Numbers</label>
+
+                <input type="checkbox" id="cb_numbers" checked />
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Include Upper Case</label>
+
+                <input type="checkbox" id="cb_UC" checked />
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Include Lower Case</label>
+
+                <input type="checkbox" id="cb_LC" checked />
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Include Special Characters</label>
+
+                <input type="checkbox" id="cb_OddBalls" checked />
+
+            </div>
+
+
+
+        </div>
+
+        <button class="generate-btn" id="generate" onclick="generatePW()">Generate Password</button>
+
+ <!--<input class="generate-btn" type="submit" value="Generate Password" onclick="generatePW()">-->
+
+    </div>
+
+</body>
+
+<script>
+
+    function generatePW() {
+
+        //first, I put the html objects into javascript variables
+
+        var v_numbers = document.getElementById("cb_numbers").checked; //note: doing this will mean the variable will have the value of true if checked / false if not checkede
+
+        var v_UC = document.getElementById("cb_UC").checked;
+
+        var v_LC = document.getElementById("cb_LC").checked;
+
+        var v_OddBalls = document.getElementById("cb_OddBalls").checked;
+
+      
+
+	    var v_lengthOfFinalPassword = document.getElementById("sl_length").value;
+
+        //make a variable that will hold the final password .  since it will be generated one letter at a time it  will be blank at first
+
+        var generated_PW = "";
+
+
+
+        //for each 'letter' in generated password first make a big string of all possible options based on selections/checkboxes
+
+        //so... start off with a blank variable
+
+        var possibleOptions = "";
+
+        //if the lower case is selected, let that variable equal all possible lower cases.
+
+        if (v_LC) { 
+
+            possibleOptions = possibleOptions + "abcdefghijklmnovqrstuvwxyz";
+
+        }
+
+        if (v_UC) {
+
+            possibleOptions = possibleOptions + "ABCDEFGHIJKLMNOVQRSTUVWXYZ";
+
+        }
+
+        if (v_numbers) {
+
+            possibleOptions = possibleOptions + "0123456789";
+
+        }
+
+        //TODO also... i noticed one time in the generated password it said undefined...i think it was because certain oddballs are characters that need to be escaped in javascript
+
+        if (v_OddBalls) {
+
+            possibleOptions = possibleOptions + "!@#$%^&*(){}[]=<>/,.";
+
+        }
+
+        //ensure at least one box is checked
+
+        if (possibleOptions.length == 0){
+
+        alert('You must check at least one box!')
+
+        return;
+
+        }
+
+        // now the variable possible options will be a list of all possible choices for each letter
+
+        //loop through each letter of the new password ... once for each letter as many times as it is long as specified in the slider length
+
+        //which is in the v_length variable
+
+        // the choices will be random between all possibilities .  generating a random number between 1 and the length of the possible options variables and
+
+        //then corrospond each one of those random generations to whatever number place it is in the possible options variables
+
+        var randomNumber;
+
+		var generatedLetter="";
+
+        for (let whatNumberPlaceTheGeneratorIsOn = 1; whatNumberPlaceTheGeneratorIsOn <= v_lengthOfFinalPassword; whatNumberPlaceTheGeneratorIsOn++) {
+
+            randomNumber = Math.floor(Math.random() * (possibleOptions.length)) + 1; //should pick a random number between 1 and possibleoptions which is total length of all possibilities listed
+
+			generatedLetter=encodeURIComponent(possibleOptions[randomNumber])
+
+			//this is a hack to deal with the oddballs being generated as undefined.
+
+			//it is saying that if one of the things gives undefined to then decrement the counter (ie whatNumberPlaceTheGeneratorIsOn) so that it essentially tried again
+
+			if (generatedLetter=='undefined'){
+
+			whatNumberPlaceTheGeneratorIsOn--;
+
+			}
+
+			else
+
+			{
+
+            generated_PW = generated_PW + generatedLetter;
+
+		}
+
+          
+        }
+
+      
+
+        document.getElementById("ta_final_PW").innerText = decodeURIComponent(generated_PW);
+
+    }
+
+</script>
+
+
+
+
+
+</html>
+
